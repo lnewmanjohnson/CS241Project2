@@ -28,6 +28,36 @@ class ReflexAgent(Agent):
       headers.
     """
 
+    def ghostDistanceEvaluation(self, gameState):
+      ghostStates = gameState.getGhostStates()
+      totalGhostValue = 0
+      for ghostState in ghostStates:
+        dist = int(manhattanDistance(ghostState.getPosition(), gameState.getPacmanPosition()))
+        if (dist == 0):
+          totalGhostValue += -5
+        else:
+          totalGhostValue += -((1/dist)^2)
+        return totalGhostValue
+
+    def foodDistanceEvaluation(self, gameState):
+
+      foodStates = gameState.getFood()
+      pacmanPosition = gameState.getPacmanPosition()
+      totalFoodValue = 0
+      foodGrid = gameState.getFood().asList()
+      i = 0
+      while i < len(foodGrid):
+        j = 0
+        while j < len(foodGrid[0]):
+          if (foodGrid[i][j]):
+            totalFoodValue += manhattanDistance((i, j), pacmanPosition)
+          j += 1
+        i += 1
+        #print(foodState)
+        #totalFoodValue += int(manhattanDistance(foodState, gameState.getPacmanPosition()))
+        print("totalFoodValue found to be ",totalFoodValue)
+      return totalFoodValue
+
 
     def getAction(self, gameState):
         """
@@ -73,8 +103,21 @@ class ReflexAgent(Agent):
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
+
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        utility = 0
+        currentGhostDistance = 0
+        currentGhostValue = 0
+        newGhostDistance = 0
+        #print("for successor func returns:", self.ghostDistanceEvaluation(successorGameState))
+        #print("for current func returns:", self.ghostDistanceEvaluation(currentGameState))
+        #print("diff =", self.ghostDistanceEvaluation(successorGameState) - self.ghostDistanceEvaluation(currentGameState))
+        #print("while diff for food =", self.foodDistanceEvaluation(successorGameState) - self.foodDistanceEvaluation(currentGameState))
+        ghostDelta = 2*(self.ghostDistanceEvaluation(successorGameState) - self.ghostDistanceEvaluation(currentGameState))
+        foodDelta = self.foodDistanceEvaluation(successorGameState) - self.foodDistanceEvaluation(currentGameState)
+        return (foodDelta + ghostDelta)
+
+
 
 def scoreEvaluationFunction(currentGameState):
     """
