@@ -29,6 +29,8 @@ class ReflexAgent(Agent):
     """
 
     def ghostDistanceEvaluation(self, gameState):
+
+      
       ghostStates = gameState.getGhostStates()
       totalGhostValue = 0
       for ghostState in ghostStates:
