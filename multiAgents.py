@@ -28,9 +28,7 @@ class ReflexAgent(Agent):
       headers.
     """
 
-    def ghostDistanceEvaluation(self, gameState):
-
-      
+    def ghostDistanceEvaluation(self, gameState):     
       ghostStates = gameState.getGhostStates()
       totalGhostValue = 0
       for ghostState in ghostStates:
