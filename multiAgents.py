@@ -55,7 +55,7 @@ class ReflexAgent(Agent):
         i += 1
         #print(foodState)
         #totalFoodValue += int(manhattanDistance(foodState, gameState.getPacmanPosition()))
-        print("totalFoodValue found to be ",totalFoodValue)
+        #print("totalFoodValue found to be ",totalFoodValue)
       return totalFoodValue
 
 
