@@ -128,27 +128,27 @@ class MinimaxAgent(MultiAgentSearchAgent):
           gameState.getNumAgents():
             Returns the total number of agents in the game
         """
-
+        #we'll need to fix all of this by changing it to return an action
         if (self.depth == 0): return self.evaluationFunction
 
         n = gameState.getNumAgents()
 
         for i in range(n):
-            if (i == n):
+            if (i == n-1):
                 self.depth -= 1
                 
             if (i == 0):
                 legalActions = gameState.getLegalActions(i);
-                successors = set([])
+                successors = []
                 for action in legalActions:
-                    successors.add(self.getAction(gameState.generateSuccessor(n, action)))
+                    successors.append(self.getAction(gameState.generateSuccessor(i, action))) 
                 return max(successors)        
 
             else:
                 legalActions = gameState.getLegalActions(i);
-                successors = set([])
+                successors = []
                 for action in legalActions:
-                    successors.add(self.getAction(gameState.generateSuccessor(n, action)))
+                    successors.append(self.getAction(gameState.generateSuccessor(i, action)))
                 return min(successors)        
             
                 
