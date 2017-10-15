@@ -28,35 +28,75 @@ class ReflexAgent(Agent):
       headers.
     """
 
-    def ghostDistanceEvaluation(self, gameState):     
-      ghostStates = gameState.getGhostStates()
-      totalGhostValue = 0
-      for ghostState in ghostStates:
-        dist = int(manhattanDistance(ghostState.getPosition(), gameState.getPacmanPosition()))
-        if (dist == 0):
-          totalGhostValue += -5
+    def findClosestFood(self, gameState):
+        #takes a location tuple and returns the closest food it as a tuple
+        #WARNING:   ONLY CLOSEST +/- 1 SPACE. DOES NOT CONSISTENTLY BREAK TIES.
+        #           this should not effect evaluation significantly
+        closestFood = None
+        foodGrid = gameState.getFood().asList()
+        pacmanPosition = gameState.getPacmanPosition()
+        print(pacmanPosition)
+        k,l = pacmanPosition[0]
+        j,i = pacmanPosition[1] #l is unnecessary? 
+        while True:
+            y = 0
+            while (j+y < i):
+                x = 0
+                while (k+x < k):
+                    x += 1
+                    if (foodGrid[k+x][j+y]):
+                        return (k+x,j+y)
+                z += 1
+                if (j-1 >= 0):
+                    j -= 1
+            if ()
+        if (pacmanPosition[0] - 1 > 0):
+            i[0], j[0] = pacmanPosition[0] - 1
+            if ()
         else:
-          totalGhostValue += -((1/dist)^2)
+            i[0], j[0] = pacmanPosition[0]
+        i = pacmanPosition[0]
+            # i represents the x-axis
+
+        return closestFood
+
+    def ghostDistanceEvaluation(self, gameState):     
+        ghostStates = gameState.getGhostStates()
+        totalGhostValue = 0
+        for ghostState in ghostStates:
+            dist = int(manhattanDistance(ghostState.getPosition(), gameState.getPacmanPosition()))
+            if (dist == 0):
+                totalGhostValue += -5
+            else:
+                totalGhostValue += -((1/dist)^2)
         return totalGhostValue
 
     def foodDistanceEvaluation(self, gameState):
+        closestFood = self.findClosestFood(gameState)
+        return manhattanDistance(gameState.getPacmanPosition(), closestFood)
 
-      foodStates = gameState.getFood()
-      pacmanPosition = gameState.getPacmanPosition()
-      totalFoodValue = 0
-      foodGrid = gameState.getFood().asList()
-      i = 0
-      while i < len(foodGrid):
-        j = 0
-        while j < len(foodGrid[0]):
-          if (foodGrid[i][j]):
-            totalFoodValue += manhattanDistance((i, j), pacmanPosition)
-          j += 1
-        i += 1
-        #print(foodState)
-        #totalFoodValue += int(manhattanDistance(foodState, gameState.getPacmanPosition()))
-        #print("totalFoodValue found to be ",totalFoodValue)
-      return totalFoodValue
+
+
+        """
+        OLD FOOD DISTANCE EVAL FUNCTION. TOO SLOW TO RUN REAL TIME
+        foodStates = gameState.getFood()
+        pacmanPosition = gameState.getPacmanPosition()
+        totalFoodValue = 0
+        foodGrid = gameState.getFood().asList()
+        i = 0
+        while i < len(foodGrid):
+            j = 0
+            while j < len(foodGrid[0]):
+                if (foodGrid[i][j]):
+                totalFoodValue += manhattanDistance((i, j), pacmanPosition)
+                j += 1
+            i += 1
+            #print(foodState)
+            #totalFoodValue += int(manhattanDistance(foodState, gameState.getPacmanPosition()))
+            #print("totalFoodValue found to be ",totalFoodValue)
+        return totalFoodValue
+        """
+        return totalFoodValue
 
 
     def getAction(self, gameState):
