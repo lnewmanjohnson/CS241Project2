@@ -128,9 +128,30 @@ class MinimaxAgent(MultiAgentSearchAgent):
           gameState.getNumAgents():
             Returns the total number of agents in the game
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
 
+        if (self.depth == 0): return self.evaluationFunction
+
+        n = gameState.getNumAgents()
+
+        for i in range(n):
+            if (i == n):
+                self.depth -= 1
+                
+            if (i == 0):
+                legalActions = gameState.getLegalActions(i);
+                successors = set([])
+                for action in legalActions:
+                    successors.add(self.getAction(gameState.generateSuccessor(n, action)))
+                return max(successors)        
+
+            else:
+                legalActions = gameState.getLegalActions(i);
+                successors = set([])
+                for action in legalActions:
+                    successors.add(self.getAction(gameState.generateSuccessor(n, action)))
+                return min(successors)        
+            
+                
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
       Your minimax agent with alpha-beta pruning (question 3)
