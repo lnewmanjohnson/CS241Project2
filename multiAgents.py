@@ -29,81 +29,6 @@ class ReflexAgent(Agent):
       headers.
     """
 
-    def findClosestFood(self, gameState):
-        #takes a location tuple and returns the closest food it as a tuple
-        #WARNING:   ONLY CLOSEST +/- 1 SPACE. DOES NOT CONSISTENTLY BREAK TIES.
-        #           this should not effect evaluation significantly
-        closestFood = None
-        foodGrid = gameState.getFood()
-        foodGridList = gameState.getFood().asList()
-        pacmanPosition = gameState.getPacmanPosition()
-        j = pacmanPosition[0]
-        k = pacmanPosition[0]
-        i = pacmanPosition[1]
-        l = pacmanPosition[1]
-
-        while True:
-            x = 0
-            while (j + x <= k):
-                y = 0
-                while (l + y <= i):
-                    if (foodGrid[(j + x)][(l + y)]):
-                        print('found closest food @:', j+x, l+y)
-                        return (j + x, l + y)
-                    y += 1
-                x += 1
-            if (j - 1 >= 0):
-                j -= 1
-            if (k + 1 < len(foodGridList)):
-                k += 1
-            if (l - 1 >= 0):
-                j -= 1
-            if (i + 1 < len(foodGrid[0])):
-                i += 1
-        return closestFood
-
-    def ghostDistanceEvaluation(self, gameState):     
-        ghostStates = gameState.getGhostStates()
-        totalGhostValue = 0
-        for ghostState in ghostStates:
-            dist = int(manhattanDistance(ghostState.getPosition(), gameState.getPacmanPosition()))
-            if (dist == 0):
-                totalGhostValue += -5
-            else:
-                totalGhostValue += -((1/dist)^2)
-        return totalGhostValue
-
-    def foodDistanceEvaluation(self, gameState):
-        closestFood = self.findClosestFood(gameState)
-        print("pacmanPosition =", gameState.getPacmanPosition())
-        print("closestFood =", closestFood)
-        print ('foodDistanceEvaluation about to return:', manhattanDistance(gameState.getPacmanPosition(), closestFood))
-        return manhattanDistance(gameState.getPacmanPosition(), closestFood)
-
-
-
-        """
-        OLD FOOD DISTANCE EVAL FUNCTION. TOO SLOW TO RUN REAL TIME
-        foodStates = gameState.getFood()
-        pacmanPosition = gameState.getPacmanPosition()
-        totalFoodValue = 0
-        foodGrid = gameState.getFood().asList()
-        i = 0
-        while i < len(foodGrid):
-            j = 0
-            while j < len(foodGrid[0]):
-                if (foodGrid[i][j]):
-                totalFoodValue += manhattanDistance((i, j), pacmanPosition)
-                j += 1
-            i += 1
-            #print(foodState)
-            #totalFoodValue += int(manhattanDistance(foodState, gameState.getPacmanPosition()))
-            #print("totalFoodValue found to be ",totalFoodValue)
-        return totalFoodValue
-        """
-        return totalFoodValue
-
-
     def getAction(self, gameState):
         """
         You do not need to change this method, but you're welcome to.
@@ -150,7 +75,6 @@ class ReflexAgent(Agent):
         newGhostStates = successorGameState.getGhostStates()
         currGhostStates = currentGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
-        #print("len", len(successorGameState.getFood().asList()))
 
         "*** YOUR CODE HERE ***"
         newFoodDistance = 0.0
@@ -164,7 +88,6 @@ class ReflexAgent(Agent):
         while (x < currFood.width):
             y = 0
             while (y < currFood.height):
-                #print("about to use", x , y)
                 if (currFood[x][y]):
                     currFoodDistance += (1.0/((manhattanDistance(currPos, (x,y)))))
                 y += 1
@@ -174,9 +97,7 @@ class ReflexAgent(Agent):
         while (x < newFood.width):
             y = 0
             while (y < newFood.height):
-                #print("about to use", x , y)
                 if (newFood[x][y]):
-                    #print("seen value is", (1.0/((manhattanDistance(currPos, (x,y))))))
                     newFoodDistance += (1.0/((manhattanDistance(newPos, (x,y)))))
                 y += 1
             x += 1
@@ -189,34 +110,7 @@ class ReflexAgent(Agent):
             if (manhattanDistance(newPos, ghost.getPosition()) != 0):
                 currGhostDistance += (5/math.pow(manhattanDistance(currPos, ghost.getPosition()),2))
 
-        #print("FOR COMMAND", action)
-        #print("4 distances are:")
-        #print("currFoodDistance", currFoodDistance)
-        #print("newFoodDistance", newFoodDistance)
-        #print("newGhostDistance", newGhostDistance)
-        #print("currGhostDistance", currGhostDistance)
         return (newFoodDistance - currFoodDistance) + (currGhostDistance - newGhostDistance)
-
-        """
-        utility = 0
-        currentGhostDistance = 0
-        currentGhostValue = 0
-        newGhostDistance = 0
-        #print("for successor func returns:", self.ghostDistanceEvaluation(successorGameState))
-        #print("for current func returns:", self.ghostDistanceEvaluation(currentGameState))
-        #print("diff =", self.ghostDistanceEvaluation(successorGameState) - self.ghostDistanceEvaluation(currentGameState))
-        #print("while diff for food =", self.foodDistanceEvaluation(successorGameState) - self.foodDistanceEvaluation(currentGameState))
-        ghostDelta = (self.ghostDistanceEvaluation(successorGameState) - self.ghostDistanceEvaluation(currentGameState))
-        foodDelta = self.foodDistanceEvaluation(successorGameState)
-        print('foodDelta is :', foodDelta)
-        if (foodDelta > 0):
-            return (1/foodDelta)
-        return (10)
-        
-        return foodDistance - ghostDistance
-        """
-
-
 
 def scoreEvaluationFunction(currentGameState):
     """
