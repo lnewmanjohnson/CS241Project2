@@ -15,6 +15,7 @@
 from util import manhattanDistance
 from game import Directions
 import random, util
+import math
 
 from game import Agent
 
@@ -143,12 +144,57 @@ class ReflexAgent(Agent):
         # Useful information you can extract from a GameState (pacman.py)
         successorGameState = currentGameState.generatePacmanSuccessor(action)
         newPos = successorGameState.getPacmanPosition()
+        currPos = currentGameState.getPacmanPosition()
         newFood = successorGameState.getFood()
+        currFood = currentGameState.getFood()
         newGhostStates = successorGameState.getGhostStates()
+        currGhostStates = currentGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
-
+        #print("len", len(successorGameState.getFood().asList()))
 
         "*** YOUR CODE HERE ***"
+        newFoodDistance = 0.0
+        newGhostDistance = 0.0
+        currFoodDistance = 0.0
+        currGhostDistance = 0.0
+        if (successorGameState.getNumFood() < currentGameState.getNumFood()):
+            currFoodDistance += 2
+        
+        x = 0
+        while (x < currFood.width):
+            y = 0
+            while (y < currFood.height):
+                #print("about to use", x , y)
+                if (currFood[x][y]):
+                    currFoodDistance += (1/((manhattanDistance(currPos, (x,y)))))
+                y += 1
+            x += 1
+
+        while (x < newFood.width):
+            y = 0
+            while (y < newFood.height):
+                #print("about to use", x , y)
+                if (newFood[x][y]):
+                    print("seen value is", (1/((manhattanDistance(currPos, (x,y))))))
+                    newFoodDistance += (1/((manhattanDistance(newPos, (x,y)))))
+                y += 1
+            x += 1
+
+        for ghost in newGhostStates:
+            if (manhattanDistance(newPos, ghost.getPosition()) != 0):
+                newGhostDistance += (1/manhattanDistance(newPos, ghost.getPosition()))
+
+        for ghost in currGhostStates:
+            if (manhattanDistance(newPos, ghost.getPosition()) != 0):
+                newGhostDistance += (1/math.pow(manhattanDistance(newPos, ghost.getPosition()),111))
+
+        print("3 distances are:")
+        print("newFoodDistance", newFoodDistance)
+        print("currFoodDistance", currFoodDistance)
+        print("newGhostDistance", newGhostDistance)
+        return (currFoodDistance - newFoodDistance) - newGhostDistance
+
+        """
         utility = 0
         currentGhostDistance = 0
         currentGhostValue = 0
@@ -163,6 +209,9 @@ class ReflexAgent(Agent):
         if (foodDelta > 0):
             return (1/foodDelta)
         return (10)
+        
+        return foodDistance - ghostDistance
+        """
 
 
 
