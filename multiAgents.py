@@ -183,11 +183,11 @@ class ReflexAgent(Agent):
 
         for ghost in newGhostStates:
             if (manhattanDistance(newPos, ghost.getPosition()) != 0):
-                newGhostDistance += (3/math.pow(manhattanDistance(newPos, ghost.getPosition()),2))
+                newGhostDistance += (5/math.pow(manhattanDistance(newPos, ghost.getPosition()),2))
 
         for ghost in currGhostStates:
             if (manhattanDistance(newPos, ghost.getPosition()) != 0):
-                currGhostDistance += (3/math.pow(manhattanDistance(currPos, ghost.getPosition()),2))
+                currGhostDistance += (5/math.pow(manhattanDistance(currPos, ghost.getPosition()),2))
 
         #print("FOR COMMAND", action)
         #print("4 distances are:")
