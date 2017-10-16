@@ -158,7 +158,7 @@ class ReflexAgent(Agent):
         currFoodDistance = 0.0
         currGhostDistance = 0.0
         if (successorGameState.getNumFood() < currentGameState.getNumFood()):
-            currFoodDistance += 2
+            currFoodDistance -= 2
         
         x = 0
         while (x < currFood.width):
@@ -166,33 +166,36 @@ class ReflexAgent(Agent):
             while (y < currFood.height):
                 #print("about to use", x , y)
                 if (currFood[x][y]):
-                    currFoodDistance += (1/((manhattanDistance(currPos, (x,y)))))
+                    currFoodDistance += (1.0/((manhattanDistance(currPos, (x,y)))))
                 y += 1
             x += 1
 
+        x = 0    
         while (x < newFood.width):
             y = 0
             while (y < newFood.height):
                 #print("about to use", x , y)
                 if (newFood[x][y]):
-                    print("seen value is", (1/((manhattanDistance(currPos, (x,y))))))
-                    newFoodDistance += (1/((manhattanDistance(newPos, (x,y)))))
+                    #print("seen value is", (1.0/((manhattanDistance(currPos, (x,y))))))
+                    newFoodDistance += (1.0/((manhattanDistance(newPos, (x,y)))))
                 y += 1
             x += 1
 
         for ghost in newGhostStates:
             if (manhattanDistance(newPos, ghost.getPosition()) != 0):
-                newGhostDistance += (1/manhattanDistance(newPos, ghost.getPosition()))
+                newGhostDistance += (3/math.pow(manhattanDistance(newPos, ghost.getPosition()),2))
 
         for ghost in currGhostStates:
             if (manhattanDistance(newPos, ghost.getPosition()) != 0):
-                newGhostDistance += (1/math.pow(manhattanDistance(newPos, ghost.getPosition()),111))
+                currGhostDistance += (3/math.pow(manhattanDistance(currPos, ghost.getPosition()),2))
 
-        print("3 distances are:")
-        print("newFoodDistance", newFoodDistance)
-        print("currFoodDistance", currFoodDistance)
-        print("newGhostDistance", newGhostDistance)
-        return (currFoodDistance - newFoodDistance) - newGhostDistance
+        #print("FOR COMMAND", action)
+        #print("4 distances are:")
+        #print("currFoodDistance", currFoodDistance)
+        #print("newFoodDistance", newFoodDistance)
+        #print("newGhostDistance", newGhostDistance)
+        #print("currGhostDistance", currGhostDistance)
+        return (newFoodDistance - currFoodDistance) + (currGhostDistance - newGhostDistance)
 
         """
         utility = 0
