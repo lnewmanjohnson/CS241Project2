@@ -81,9 +81,12 @@ class ReflexAgent(Agent):
         newGhostDistance = 0.0
         currFoodDistance = 0.0
         currGhostDistance = 0.0
+
+        #Check if the next move will secure a food pellet
         if (successorGameState.getNumFood() < currentGameState.getNumFood()):
             currFoodDistance -= 2
         
+        #Evaluate current state of affairs in terms of food
         x = 0
         while (x < currFood.width):
             y = 0
@@ -93,6 +96,7 @@ class ReflexAgent(Agent):
                 y += 1
             x += 1
 
+        #Evaluate future state of affairs in terms of food
         x = 0    
         while (x < newFood.width):
             y = 0
@@ -102,14 +106,18 @@ class ReflexAgent(Agent):
                 y += 1
             x += 1
 
+        #Evaluate future risk of ghosts
         for ghost in newGhostStates:
             if (manhattanDistance(newPos, ghost.getPosition()) != 0):
                 newGhostDistance += (5/math.pow(manhattanDistance(newPos, ghost.getPosition()),2))
 
+        #Evaluate currentr risk of ghosts
         for ghost in currGhostStates:
             if (manhattanDistance(newPos, ghost.getPosition()) != 0):
                 currGhostDistance += (5/math.pow(manhattanDistance(currPos, ghost.getPosition()),2))
 
+        #Return how much better the future state of affairs is in terms of food
+        #plus the added ghost risk of that future 
         return (newFoodDistance - currFoodDistance) + (currGhostDistance - newGhostDistance)
 
 def scoreEvaluationFunction(currentGameState):
