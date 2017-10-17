@@ -151,7 +151,7 @@ class MultiAgentSearchAgent(Agent):
         self.depth = int(depth)
 
 class MinimaxAgent(MultiAgentSearchAgent):
-    """
+    """zz
       Your minimax agent (question 2)
     """
 
@@ -173,7 +173,46 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns the total number of agents in the game
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+
+    def miniMax (self, gameState, agentIndex, depth):
+        legalActions = gameState.getScore()
+
+
+        #agentIndex == 0 is pacman and is the MAXIMIZING function
+        if (agentIndex == 0):
+            bestMoveValue = -99999
+            bestMove = None
+            for action in legalActions:
+                #Termination is being handled here because the evaluation function needs a current and a future
+                if (len(gameState.generateSuccessor(action).getLegalActions()) or (depth - 1) == 0):
+                    return evaluationFunction(gameState, action)
+                #If it doesn't terminate we recurse down
+                else:
+                    successorValue = miniMax(gameState.generateSuccessor(action), ((agentIndex + 1) % gameState.getNumAgents()), depth)
+
+                if (successorValue) > bestMoveValue:
+                    bestMoveValue = successorValue
+                    bestMove = action
+            return bestMoveValue
+
+        #every other agent value is a ghost and is the MINIMIZING function
+        else:
+            bestMoveValue = 99999
+            bestMove = None
+            for action in legalActions:
+                #Termination is being handled here because the evaluation function needs a current and a future
+                if (len(gameState.generateSuccessor(action).getLegalActions()) or (depth - 1) == 0):
+                    successorValue = evaluationFunction(gameState, action)
+                #If it doesn't terminate we recurse down
+                else:
+                    successorValue = miniMax(gameState.generateSuccessor(action), ((agentIndex + 1) % gameState.getNumAgents()), depth)
+
+                if (successorValue < bestMoveValue):
+                    bestMoveValue = successorValue
+                    bestMove = action
+            return bestMoveValue
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
