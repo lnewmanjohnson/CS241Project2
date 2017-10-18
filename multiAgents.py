@@ -173,7 +173,42 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns the total number of agents in the game
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        return self.miniMax(gameState, 0, self.depth)[1]
+
+
+    def miniMax (self, gameState, agentIndex, depth):
+        legalActions = gameState.getLegalActions(agentIndex)
+
+
+        if (len(gameState.getLegalActions()) == 0 or depth == 0):
+            return (self.evaluationFunction(gameState), None)
+
+        #agentIndex == 0 is pacman and is the MAXIMIZING function
+        if (agentIndex == 0):
+            # a list where the first element is the cost and the second is the name of the move
+            bestMove = [-99999, None]
+            for action in legalActions:
+                successor = self.miniMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth)
+                if (successor[0] > bestMove[0]):
+                    bestMove[0] = successor[0]
+                    bestMove[1] = action
+            return bestMove
+
+        #every other agent value is a ghost and is the MINIMIZING function
+        else:
+            bestMove = [99999, None]
+            for action in legalActions:
+                #if the next call is going to end the ghostPhase we decrement depth
+                if ((agentIndex + 1) % gameState.getNumAgents()) == 0:
+                    successor = self.miniMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth - 1)
+                #else the next call is going to continue the ghost phase and the depth remains the same
+                else:
+                    successor = self.miniMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth)
+                if (successor[0] < bestMove[0]):
+                    bestMove[0] = successor[0]
+                    bestMove[1] = action
+            return bestMove
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
