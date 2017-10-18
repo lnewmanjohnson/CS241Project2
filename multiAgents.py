@@ -306,7 +306,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                 #else the next call is going to continue the ghost phase and the depth remains the same
                 else:
                     successor = self.expectiMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth)
-                bestMove[0] += ((successor[0])/len(gameState.getLegalActions()))
+                bestMove[0] += ((successor[0])/len(gameState.getLegalActions(agentIndex)))
             return bestMove
 
 def betterEvaluationFunction(currentGameState):
