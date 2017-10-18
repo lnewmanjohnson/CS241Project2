@@ -151,7 +151,7 @@ class MultiAgentSearchAgent(Agent):
         self.depth = int(depth)
 
 class MinimaxAgent(MultiAgentSearchAgent):
-    """zz
+    """
       Your minimax agent (question 2)
     """
 
@@ -174,45 +174,41 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
 
+        return self.miniMax(gameState, 0, self.depth)[1]
+
 
     def miniMax (self, gameState, agentIndex, depth):
-        legalActions = gameState.getScore()
+        legalActions = gameState.getLegalActions(agentIndex)
 
+
+        if (len(gameState.getLegalActions()) == 0 or depth < 0):
+            #print("FOUND TERMINAL STATE")
+            #print("legalActions =", legalActions)
+            #print("depth ==", depth)
+            #returns a tuple, the utility found, and the action taken at that node
+            #print("about to terminate at state with children", gameState.getLegalActions())
+            return (self.evaluationFunction(gameState), None)
 
         #agentIndex == 0 is pacman and is the MAXIMIZING function
         if (agentIndex == 0):
-            bestMoveValue = -99999
-            bestMove = None
+            # a list where the first element is the cost and the second is the name of the move
+            bestMove = [-99999, None]
             for action in legalActions:
-                #Termination is being handled here because the evaluation function needs a current and a future
-                if (len(gameState.generateSuccessor(action).getLegalActions()) or (depth - 1) == 0):
-                    return evaluationFunction(gameState, action)
-                #If it doesn't terminate we recurse down
-                else:
-                    successorValue = miniMax(gameState.generateSuccessor(action), ((agentIndex + 1) % gameState.getNumAgents()), depth)
-
-                if (successorValue) > bestMoveValue:
-                    bestMoveValue = successorValue
-                    bestMove = action
-            return bestMoveValue
+                successor = self.miniMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth - 1)
+                if (successor[0] > bestMove[0]):
+                    bestMove[0] = successor[0]
+                    bestMove[1] = action
+            return bestMove
 
         #every other agent value is a ghost and is the MINIMIZING function
         else:
-            bestMoveValue = 99999
-            bestMove = None
+            bestMove = [99999, None]
             for action in legalActions:
-                #Termination is being handled here because the evaluation function needs a current and a future
-                if (len(gameState.generateSuccessor(action).getLegalActions()) or (depth - 1) == 0):
-                    successorValue = evaluationFunction(gameState, action)
-                #If it doesn't terminate we recurse down
-                else:
-                    successorValue = miniMax(gameState.generateSuccessor(action), ((agentIndex + 1) % gameState.getNumAgents()), depth)
-
-                if (successorValue < bestMoveValue):
-                    bestMoveValue = successorValue
-                    bestMove = action
-            return bestMoveValue
-
+                successor = self.miniMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth - 1)
+                if (successor[0] < bestMove[0]):
+                    bestMove[0] = successor[0]
+                    bestMove[1] = action
+            return bestMove
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
