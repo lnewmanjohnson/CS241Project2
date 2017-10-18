@@ -220,7 +220,48 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return self.alphaBetaMax(gameState, 0, self.depth, -99999, 99999)[1]
+
+    def alphaBetaMax (self, gameState, agentIndex, depth, alpha, beta):
+        legalActions = gameState.getLegalActions(agentIndex)
+
+
+        if (len(gameState.getLegalActions()) == 0 or depth == 0):
+            return (self.evaluationFunction(gameState), None)
+
+        #agentIndex == 0 is pacman and is the MAXIMIZING function
+        if (agentIndex == 0):
+            # a list where the first element is the cost and the second is the name of the move
+            bestMove = [-99999, None]
+            for action in legalActions:
+                successor = self.alphaBetaMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth, alpha, beta)
+                if (successor[0] > bestMove[0]):
+                    bestMove[0] = successor[0]
+                    bestMove[1] = action
+                if (bestMove[0] > beta):
+                    return bestMove
+                if (bestMove[0] > alpha):
+                    alpha = bestMove[0]
+            return bestMove
+
+        #every other agent value is a ghost and is the MINIMIZING function
+        else:
+            bestMove = [99999, None]
+            for action in legalActions:
+                #if the next call is going to end the ghostPhase we decrement depth
+                if ((agentIndex + 1) % gameState.getNumAgents()) == 0:
+                    successor = self.alphaBetaMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth - 1, alpha, beta)
+                #else the next call is going to continue the ghost phase and the depth remains the same
+                else:
+                    successor = self.alphaBetaMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth, alpha, beta)
+                if (successor[0] < bestMove[0]):
+                    bestMove[0] = successor[0]
+                    bestMove[1] = action
+                if (bestMove[0] < alpha):
+                    return bestMove
+                if (bestMove[0] < beta):
+                    beta = bestMove[0]
+            return bestMove
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
