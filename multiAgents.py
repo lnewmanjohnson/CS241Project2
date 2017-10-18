@@ -182,11 +182,6 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
 
         if (len(gameState.getLegalActions()) == 0 or depth == 0):
-            #print("FOUND TERMINAL STATE")
-            #print("legalActions =", legalActions)
-            #print("depth ==", depth)
-            #returns a tuple, the utility found, and the action taken at that node
-            #print("about to terminate at state with children", gameState.getLegalActions())
             return (self.evaluationFunction(gameState), None)
 
         #agentIndex == 0 is pacman and is the MAXIMIZING function
