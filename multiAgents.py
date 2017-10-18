@@ -181,7 +181,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         legalActions = gameState.getLegalActions(agentIndex)
 
 
-        if (len(gameState.getLegalActions()) == 0 or depth < 0):
+        if (len(gameState.getLegalActions()) == 0 or depth == 0):
             #print("FOUND TERMINAL STATE")
             #print("legalActions =", legalActions)
             #print("depth ==", depth)
@@ -194,7 +194,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
             # a list where the first element is the cost and the second is the name of the move
             bestMove = [-99999, None]
             for action in legalActions:
-                successor = self.miniMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth - 1)
+                successor = self.miniMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth)
                 if (successor[0] > bestMove[0]):
                     bestMove[0] = successor[0]
                     bestMove[1] = action
@@ -204,7 +204,12 @@ class MinimaxAgent(MultiAgentSearchAgent):
         else:
             bestMove = [99999, None]
             for action in legalActions:
-                successor = self.miniMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth - 1)
+                #if the next call is going to end the ghostPhase we decrement depth
+                if ((agentIndex + 1) % gameState.getNumAgents()) == 0:
+                    successor = self.miniMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth - 1)
+                #else the next call is going to continue the ghost phase and the depth remains the same
+                else:
+                    successor = self.miniMax(gameState.generateSuccessor(agentIndex, action), ((agentIndex + 1) % gameState.getNumAgents()), depth)
                 if (successor[0] < bestMove[0]):
                     bestMove[0] = successor[0]
                     bestMove[1] = action
