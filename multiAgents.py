@@ -323,6 +323,7 @@ def betterEvaluationFunction(currentGameState):
     currGhostStates = currentGameState.getGhostStates()
     currScaredTimes = [ghostState.scaredTimer for ghostState in currGhostStates]
     currCapsules = currentGameState.getCapsules()
+    currScore = currentGameState.getScore()
 
     currFoodDistance = 0.0
     currGhostDistance = 0.0
@@ -337,8 +338,8 @@ def betterEvaluationFunction(currentGameState):
         y = 0
         while (y < currFood.height):
             if (currFood[x][y]):
-                currFoodDistance += (3.0/((manhattanDistance(currPos, (x,y)))))
-                numFood +=1
+                currFoodDistance += (1.0/((manhattanDistance(currPos, (x,y)))))
+                numFood += 1
             y += 1
         x += 1
 
@@ -356,18 +357,31 @@ def betterEvaluationFunction(currentGameState):
             currGhostDistance += (5.0/math.pow(manhattanDistance(currPos, ghost.getPosition()),2))
             numGhost +=1
 
+    if (numFood == 0):
+        numFood = .0001
+    
     # If ghosts are scared, have pacman chase the ghosts, but run away when they stop being scared
     for time in currScaredTimes:
-        if (time > 0):
-            if (manhattanDistance(currPos, ghost.getPosition()) == 0):
-                currGhostDistance = 50
-            return (15*currFoodDistance + 50*int(time)*currGhostDistance - numFood - 20*numGhost)
+        if (time > 1):          
+            #return (currCapsuleDistance + currFoodDistance + 40*currGhostDistance + 6/numFood - numCapsule)
+            #return (math.pow(500*currGhostDistance,2)+5*int(time) + 1/numGhost + 15*currFoodDistance*(1/(20*numFood)))
+            return (5*currCapsuleDistance + 5*currFoodDistance*(6/numFood) + 40*currGhostDistance - numCapsule)
         
-        
-    #Return the distance from food plus the risk of ghosts
-    return (currCapsuleDistance + currFoodDistance + 20*currGhostDistance - 6*numFood - numCapsule)
+    #The one below will result in 5/6 points
+    #return (currCapsuleDistance + currFoodDistance + 20*currGhostDistance + 1/(math.pow(5*numFood,2)) - numCapsule)
+
+
+    return (currCapsuleDistance + currFoodDistance + 17*currGhostDistance + 1/(math.pow(numFood,2)) - numCapsule)
+
+
+
+
+
+   # return (5*currCapsuleDistance + 20*currFoodDistance*(5/numFood) + 20*currGhostDistance - numCapsule)
+    #return (5*currCapsuleDistance +  20*currFoodDistance*(5/numFood) + 20*currGhostDistance - numCapsule - numFood)
 
       # Things to change: Make pacman chase the ghost while it's scared, make pacman go after foods
+      # adding currGhostDistance makes pacman never loose
 
 # Abbreviation
 better = betterEvaluationFunction
