@@ -331,6 +331,7 @@ def betterEvaluationFunction(currentGameState):
     numFood = 0
     numCapsule = 0
     numGhost = 0
+
     
     #Evaluate current state of affairs in terms of food
     x = 0
@@ -371,7 +372,7 @@ def betterEvaluationFunction(currentGameState):
     #return (currCapsuleDistance + currFoodDistance + 20*currGhostDistance + 1/(math.pow(5*numFood,2)) - numCapsule)
 
 
-    return (currCapsuleDistance + currFoodDistance + 17*currGhostDistance + 1/(math.pow(numFood,2)) - numCapsule)
+    return (currCapsuleDistance + currFoodDistance + 17*currGhostDistance + 1/(math.pow(numFood,2)) - numCapsule + (110 - numFood))
 
 
 
