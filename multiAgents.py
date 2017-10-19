@@ -111,7 +111,7 @@ class ReflexAgent(Agent):
             if (manhattanDistance(newPos, ghost.getPosition()) != 0):
                 newGhostDistance += (5/math.pow(manhattanDistance(newPos, ghost.getPosition()),2))
 
-        #Evaluate currentr risk of ghosts
+        #Evaluate current risk of ghosts
         for ghost in currGhostStates:
             if (manhattanDistance(newPos, ghost.getPosition()) != 0):
                 currGhostDistance += (5/math.pow(manhattanDistance(currPos, ghost.getPosition()),2))
@@ -317,7 +317,57 @@ def betterEvaluationFunction(currentGameState):
       DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Useful information you can extract from currentGameState (pacman.py)
+    currPos = currentGameState.getPacmanPosition()
+    currFood = currentGameState.getFood()
+    currGhostStates = currentGameState.getGhostStates()
+    currScaredTimes = [ghostState.scaredTimer for ghostState in currGhostStates]
+    currCapsules = currentGameState.getCapsules()
+
+    currFoodDistance = 0.0
+    currGhostDistance = 0.0
+    currCapsuleDistance = 0.0
+    numFood = 0
+    numCapsule = 0
+    numGhost = 0
+    
+    #Evaluate current state of affairs in terms of food
+    x = 0
+    while (x < currFood.width):
+        y = 0
+        while (y < currFood.height):
+            if (currFood[x][y]):
+                currFoodDistance += (3.0/((manhattanDistance(currPos, (x,y)))))
+                numFood +=1
+            y += 1
+        x += 1
+
+    #Evaluate current state of affairs in terms of capsules
+
+    for CapsulePos in currCapsules:
+        x,y = CapsulePos
+        if (x):
+            currCapsuleDistance += (1.0/((manhattanDistance(currPos, (x,y)))))
+            numCapsule +=1
+
+    #Evaluate current risk of ghosts
+    for ghost in currGhostStates:
+        if (manhattanDistance(currPos, ghost.getPosition()) != 0):
+            currGhostDistance += (5.0/math.pow(manhattanDistance(currPos, ghost.getPosition()),2))
+            numGhost +=1
+
+    # If ghosts are scared, have pacman chase the ghosts, but run away when they stop being scared
+    for time in currScaredTimes:
+        if (time > 0):
+            if (manhattanDistance(currPos, ghost.getPosition()) == 0):
+                currGhostDistance = 50
+            return (15*currFoodDistance + 50*int(time)*currGhostDistance - numFood - 20*numGhost)
+        
+        
+    #Return the distance from food plus the risk of ghosts
+    return (currCapsuleDistance + currFoodDistance + 20*currGhostDistance - 6*numFood - numCapsule)
+
+      # Things to change: Make pacman chase the ghost while it's scared, make pacman go after foods
 
 # Abbreviation
 better = betterEvaluationFunction
