@@ -314,9 +314,10 @@ def betterEvaluationFunction(currentGameState):
       Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
       evaluation function (question 5).
 
-      DESCRIPTION: <write something here so we know what you did>
+      DESCRIPTION: <We evaluated the current state of affairs by finding the number of capsules left, number of food left, an evaluation for distance from food, distance from ghost, and distance from capsule, as well as if the Ghost is scared or not. Then we added these values together in a way that weights their importance. When the ghost is scared, we want pacman to chase and eat the ghost, and that to be more important than eating the food. We encourage Pacman to eat food and capsules by subtracting the number of food and capsules. This means that the result of the Evaluation function would increase as the number of food and capsules decreased. We weighted the currGhostDistance higher than the rest because it is most important that Pacman doesn't get eaten by the ghost.>
     """
     "*** YOUR CODE HERE ***"
+    
     # Useful information you can extract from currentGameState (pacman.py)
     currPos = currentGameState.getPacmanPosition()
     currFood = currentGameState.getFood()
@@ -345,7 +346,6 @@ def betterEvaluationFunction(currentGameState):
         x += 1
 
     #Evaluate current state of affairs in terms of capsules
-
     for CapsulePos in currCapsules:
         x,y = CapsulePos
         if (x):
@@ -361,28 +361,13 @@ def betterEvaluationFunction(currentGameState):
     if (numFood == 0):
         numFood = .0001
     
-    # If ghosts are scared, have pacman chase the ghosts, but run away when they stop being scared
+    # If the Ghost is scared, chase and eat the ghost returns high eval
     for time in currScaredTimes:
         if (time > 1):          
-            #return (currCapsuleDistance + currFoodDistance + 40*currGhostDistance + 6/numFood - numCapsule)
-            #return (math.pow(500*currGhostDistance,2)+5*int(time) + 1/numGhost + 15*currFoodDistance*(1/(20*numFood)))
-            return (5*currCapsuleDistance + 5*currFoodDistance*(6/numFood) + 40*currGhostDistance - numCapsule)
-        
-    #The one below will result in 5/6 points
-    #return (currCapsuleDistance + currFoodDistance + 20*currGhostDistance + 1/(math.pow(5*numFood,2)) - numCapsule)
+            return (5*currCapsuleDistance - numCapsule + 5*currFoodDistance*(6/numFood) + 40*currGhostDistance)
 
-
-    return (currCapsuleDistance + currFoodDistance + 17*currGhostDistance + 1/(math.pow(numFood,2)) - numCapsule + (110 - numFood))
-
-
-
-
-
-   # return (5*currCapsuleDistance + 20*currFoodDistance*(5/numFood) + 20*currGhostDistance - numCapsule)
-    #return (5*currCapsuleDistance +  20*currFoodDistance*(5/numFood) + 20*currGhostDistance - numCapsule - numFood)
-
-      # Things to change: Make pacman chase the ghost while it's scared, make pacman go after foods
-      # adding currGhostDistance makes pacman never loose
+    # Otherwise, return the Eval Function, with the lower the number of Capsules, the less distance away from Capsules, the less total distance away from Food, the less distance away from ghost, and the lower the number of Food left would have a higher Eval result
+    return (currCapsuleDistance - numCapsule + currFoodDistance + 17*currGhostDistance + 1/(math.pow(numFood,2)) + (110 - numFood))
 
 # Abbreviation
 better = betterEvaluationFunction
